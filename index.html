@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Проект "Комменты"</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <ul class="comments" id="list">
+        <li class="comment">
+          <div class="comment-header">
+            <div>Глеб Фокин</div>
+            <div>12.02.22 12:18</div>
+          </div>
+          <div class="comment-body">
+            <div class="comment-text">
+              Это будет первый комментарий на этой странице
+            </div>
+          </div>
+          <div class="comment-footer">
+            <div class="likes">
+              <span class="likes-counter">3</span>
+              <button class="like-button"></button>
+            </div>
+          </div>
+        </li>
+        <li class="comment">
+          <div class="comment-header">
+            <div>Варвара Н.</div>
+            <div>13.02.22 19:22</div>
+          </div>
+          <div class="comment-body">
+            <div class="comment-text">
+              Мне нравится как оформлена эта страница! ❤
+            </div>
+          </div>
+          <div class="comment-footer">
+            <div class="likes">
+              <span class="likes-counter">75</span>
+              <button class="like-button -active-like"></button>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div class="add-form">
+        <input
+          type="text"
+          id="name-input"
+          class="add-form-name"
+          placeholder="Введите ваше имя"
+        />
+        <textarea
+          type="textarea"
+          id="commit-input"
+          class="add-form-text"
+          placeholder="Введите ваш коментарий"
+          rows="4"
+        ></textarea>
+        <div class="add-form-row">
+          <button class="add-form-button" id="add-button">Написать</button>
+        </div>
+      </div>
+    </div>
+  </body>
+  <style>
+    .error {
+      background-color: red;
+    }
+    
+  </style>
+    <script>
+    "use strict";
+    const buttonElement = document.getElementById('add-button');
+    const listElement = document.getElementById('list');
+    const nameInputElement = document.getElementById('name-input');
+    const commitInputElement = document.getElementById('commit-input');
+     
+    buttonElement.addEventListener('click', () => {
+        
+        nameInputElement.classList.remove('error');
+        commitInputElement.classList.remove('error');
+      if (nameInputElement.value === "" || commitInputElement.value === ""){
+        nameInputElement.classList.add('error');
+        commitInputElement.classList.add('error');
+        return;
+      }   
+
+  const oldListHtml = listElement.innerHTML;
+
+  const dateInput = new Date();
+  let date = dateInput.getDate();
+  let month = dateInput.getMonth() + 1;
+  let year = dateInput.getFullYear();
+  let hours = dateInput.getHours();
+  let minutes = dateInput.getMinutes();
+      if (date < 10) {
+        date = '0' + date;
+      }
+      if (month < 10) {
+        month = '0' + month;
+      }
+      if (hours < 10) {
+        hours = '0' + hours;
+      }
+      if (minutes < 10) {
+        minutes = '0' + minutes;
+      }
+    const ultimateDate = date + "." + month + "." + year + " " + hours + ":" + minutes;
+  listElement.innerHTML = oldListHtml + `<li class="comment"> 
+          <div class="comment-header">
+            <div>${nameInputElement.value}</div>
+            <div>${ultimateDate}</div>
+          </div>
+          <div class="comment-body">
+            <div class="comment-text">
+              ${commitInputElement.value}
+            </div>
+          </div>
+          <div class="comment-footer">
+            <div class="likes">
+              <span class="likes-counter">0</span>
+              <button class="like-button"></button>
+            </div>
+          </div>
+        </li>`
+  });
+  nameInputElement.value = "";
+  commitInputElement.value = "";
+  //dateInput.valueAsDate = "";  
+  //Проверка данной версии кода
+  </script>
+</html>
+
