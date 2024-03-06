@@ -65,9 +65,9 @@
   </body>
   <style>
     .error {
-      background-color: red;
+      background-color: rgb(241, 241, 234);
     }
-    
+
   </style>
     <script>
     "use strict";
@@ -76,15 +76,28 @@
     const nameInputElement = document.getElementById('name-input');
     const commitInputElement = document.getElementById('commit-input');
      
+
+        nameInputElement.oninput = () => {
+      if(nameInputElement.value.charAt(0) === ' ') {
+        nameInputElement.value = '';
+      }
+    }
+
+    commitInputElement.oninput = () => {
+      if(commitInputElement.value.charAt(0) === ' ') {
+        commitInputElement.value = '';
+      }
+    }
+
     buttonElement.addEventListener('click', () => {
-        
+      
         nameInputElement.classList.remove('error');
         commitInputElement.classList.remove('error');
       if (nameInputElement.value === "" || commitInputElement.value === ""){
         nameInputElement.classList.add('error');
         commitInputElement.classList.add('error');
         return;
-      }   
+      }  
 
   const oldListHtml = listElement.innerHTML;
 
@@ -124,11 +137,10 @@
             </div>
           </div>
         </li>`
+        document.getElementById('name-input').value = '';
+        document.getElementById('commit-input').value = '';
   });
-  nameInputElement.value = "";
-  commitInputElement.value = "";
-  //dateInput.valueAsDate = "";  
-  //Проверка данной версии кода
+  
   </script>
 </html>
 
