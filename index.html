@@ -77,7 +77,7 @@
     const commitInputElement = document.getElementById('commit-input');
      
 
-        nameInputElement.oninput = () => {
+    nameInputElement.oninput = () => {
       if(nameInputElement.value.charAt(0) === ' ') {
         nameInputElement.value = '';
       }
@@ -88,6 +88,7 @@
         commitInputElement.value = '';
       }
     }
+        
 
     buttonElement.addEventListener('click', () => {
       
@@ -140,7 +141,7 @@
         document.getElementById('name-input').value = '';
         document.getElementById('commit-input').value = '';
   });
-  
+
   </script>
 </html>
 
