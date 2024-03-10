@@ -1,147 +1,214 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Проект "Комменты"</title>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div class="container">
-      <ul class="comments" id="list">
-        <li class="comment">
-          <div class="comment-header">
-            <div>Глеб Фокин</div>
-            <div>12.02.22 12:18</div>
-          </div>
-          <div class="comment-body">
-            <div class="comment-text">
-              Это будет первый комментарий на этой странице
-            </div>
-          </div>
-          <div class="comment-footer">
-            <div class="likes">
-              <span class="likes-counter">3</span>
-              <button class="like-button"></button>
-            </div>
-          </div>
-        </li>
-        <li class="comment">
-          <div class="comment-header">
-            <div>Варвара Н.</div>
-            <div>13.02.22 19:22</div>
-          </div>
-          <div class="comment-body">
-            <div class="comment-text">
-              Мне нравится как оформлена эта страница! ❤
-            </div>
-          </div>
-          <div class="comment-footer">
-            <div class="likes">
-              <span class="likes-counter">75</span>
-              <button class="like-button -active-like"></button>
-            </div>
-          </div>
-        </li>
-      </ul>
-      <div class="add-form">
-        <input
-          type="text"
-          id="name-input"
-          class="add-form-name"
-          placeholder="Введите ваше имя"
-        />
-        <textarea
-          type="textarea"
-          id="commit-input"
-          class="add-form-text"
-          placeholder="Введите ваш коментарий"
-          rows="4"
-        ></textarea>
-        <div class="add-form-row">
-          <button class="add-form-button" id="add-button">Написать</button>
-        </div>
+
+<head>
+  <title>Проект Jack's Комменты 2</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="container">
+    <ul class="comments">
+
+    </ul>
+    <div class="add-form">
+      <input type="text" class="add-form-name" placeholder="Введите ваше имя" />
+      <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"></textarea>
+      <div class="add-form-row">
+        <button class="add-form-button">Написать</button>
+        <button class="delete-last-comment">Удалить комментарий</button>
       </div>
+
+
     </div>
-  </body>
-  <style>
-    .error {
-      background-color: rgb(241, 241, 234);
+  </div>
+</body>
+
+<script>
+  const massage_sendButton = document.querySelector('.add-form-button');
+  const listElement = document.querySelector('.comments');
+  const nameInputElement = document.querySelector('.add-form-name');
+  const commitInputElement = document.querySelector('.add-form-text');
+
+  const lastcommentDeletebutton = document.querySelector('.delete-last-comment');
+  const likebuttonElements = document.querySelectorAll('.like-button');
+  massage_sendButton.disabled = true;
+
+
+
+  nameInputElement.oninput = () => {
+    if (nameInputElement.value.charAt(0) === ' ') {
+      nameInputElement.value = '';
     }
+  }
 
-  </style>
-    <script>
-    "use strict";
-    const buttonElement = document.getElementById('add-button');
-    const listElement = document.getElementById('list');
-    const nameInputElement = document.getElementById('name-input');
-    const commitInputElement = document.getElementById('commit-input');
-     
-
-    nameInputElement.oninput = () => {
-      if(nameInputElement.value.charAt(0) === ' ') {
-        nameInputElement.value = '';
-      }
+  commitInputElement.oninput = () => {
+    if (commitInputElement.value.charAt(0) === ' ') {
+      commitInputElement.value = '';
     }
+  }
 
-    commitInputElement.oninput = () => {
-      if(commitInputElement.value.charAt(0) === ' ') {
-        commitInputElement.value = '';
-      }
+  const comments = [
+    {
+      name: "Глеб Фокин",
+      date: "12.02.22 12:18",
+      massage: "Это будет первый комментарий на этой странице",
+      isLike: false,
+      Likecounter: 3,
+      isEdit: true
+    },
+    {
+      name: "Варвара Н.",
+      date: "13.02.22 19:22",
+      massage: " Мне нравится как оформлена эта страница! ❤",
+      isLike: true,
+      Likecounter: 75,
+      isEdit: true,
     }
-        
+  ]
 
-    buttonElement.addEventListener('click', () => {
-      
-        nameInputElement.classList.remove('error');
-        commitInputElement.classList.remove('error');
-      if (nameInputElement.value === "" || commitInputElement.value === ""){
-        nameInputElement.classList.add('error');
-        commitInputElement.classList.add('error');
-        return;
-      }  
 
-  const oldListHtml = listElement.innerHTML;
 
-  const dateInput = new Date();
-  let date = dateInput.getDate();
-  let month = dateInput.getMonth() + 1;
-  let year = dateInput.getFullYear();
-  let hours = dateInput.getHours();
-  let minutes = dateInput.getMinutes();
-      if (date < 10) {
-        date = '0' + date;
+  const likebuttonListners = () => {
+    const likebuttonElements = document.querySelectorAll('.like-button');
+    for (const likebuttonElement of likebuttonElements) {
+      likebuttonElement.addEventListener("click", () => {
+        if (comments[likebuttonElement.dataset.index].isLike === false) {
+          comments[likebuttonElement.dataset.index].Likecounter = comments[likebuttonElement.dataset.index].Likecounter + 1;
+          comments[likebuttonElement.dataset.index].isLike = true;
+          likebuttonElement.classList.add("active-like");
+
+        } else if (comments[likebuttonElement.dataset.index].isLike === true) {
+          comments[likebuttonElement.dataset.index].isLike = false;
+          comments[likebuttonElement.dataset.index].Likecounter = comments[likebuttonElement.dataset.index].Likecounter - 1;
+          likebuttonElement.classList.remove("active-like");
+
+        }
+        renderComments();
+
+      })
+    }
+  }
+
+
+  const renderComments = () => {
+    const commentshtml = comments.map((comment, index) => {
+      let activelikeclass;
+      if (comments[index].isLike === true) {
+        activelikeclass = "active-like"
+      } else {
+        activelikeclass = ""
       }
-      if (month < 10) {
-        month = '0' + month;
-      }
-      if (hours < 10) {
-        hours = '0' + hours;
-      }
-      if (minutes < 10) {
-        minutes = '0' + minutes;
-      }
-    const ultimateDate = date + "." + month + "." + year + " " + hours + ":" + minutes;
-  listElement.innerHTML = oldListHtml + `<li class="comment"> 
+
+      return `
+      <li class="comment">
           <div class="comment-header">
-            <div>${nameInputElement.value}</div>
-            <div>${ultimateDate}</div>
+            <div>${comment.name}</div>
+            <div>${comment.date}</div>
           </div>
           <div class="comment-body">
             <div class="comment-text">
-              ${commitInputElement.value}
+              ${comment.massage}
             </div>
           </div>
           <div class="comment-footer">
             <div class="likes">
-              <span class="likes-counter">0</span>
-              <button class="like-button"></button>
-            </div>
+              <span class="likes-counter">${comment.Likecounter}</span>
+              <button class="like-button ${activelikeclass}" data-index="${index}" data-like="${comment.isLike}"></button>
+              </div>
           </div>
         </li>`
-        document.getElementById('name-input').value = '';
-        document.getElementById('commit-input').value = '';
-  });
+    }).join("")
+    listElement.innerHTML = commentshtml;
 
-  </script>
+    likebuttonListners();
+
+  }
+  renderComments();
+
+
+
+
+  function addComment() {
+
+    const dateInput = new Date();
+    let date = dateInput.getDate();
+    let month = dateInput.getMonth() + 1;
+    let year = dateInput.getFullYear();
+    let hours = dateInput.getHours();
+    let minutes = dateInput.getMinutes();
+    if (date < 10) {
+      date = '0' + date;
+    }
+    if (month < 10) {
+      month = '0' + month;
+    }
+    if (hours < 10) {
+      hours = '0' + hours;
+    }
+    if (minutes < 10) {
+      minutes = '0' + minutes;
+    }
+    const ultimateDate = date + "." + month + "." + year + " " + hours + ":" + minutes;
+
+
+
+    if (nameInputElement.value === "" && commitInputElement.value === "") {
+      nameInputElement.classList.add("errorinput");
+      commitInputElement.classList.add("errorinput");
+      return
+    } else if (nameInputElement.value === "") {
+      nameInputElement.classList.add("errorinput");
+      return
+    } else if (commitInputElement.value === "") {
+      commitInputElement.classList.add("errorinput");
+      return
+    }
+
+
+    comments.push({
+      name: nameInputElement.value.replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
+      date: ultimateDate,
+      massage: commitInputElement.value.replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
+      isLike: false,
+      Likecounter: 0,
+      isEdit: true
+    })
+
+
+
+
+
+    nameInputElement.value = "";
+    commitInputElement.value = "";
+    nameInputElement.classList.remove("errorinput");
+    commitInputElement.classList.remove("errorinput");
+
+    renderComments();
+
+
+  }
+
+  massage_sendButton.addEventListener("click", addComment);
+
+  nameInputElement.addEventListener("input", () => {
+    massage_sendButton.disabled = false;
+  })
+
+  commitInputElement.addEventListener("input", () => {
+    massage_sendButton.disabled = false;
+  })
+
+  lastcommentDeletebutton.addEventListener("click", () => {
+    if (comments.length > 0) {
+      comments.pop();
+      renderComments();
+    }
+  })
+
+
+
+</script>
+
 </html>
-
