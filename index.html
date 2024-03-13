@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Проект Jack's Комменты 2</title>
+  <title>Проект Jack's Комменты 3</title>
   <meta charset="utf-8" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -31,7 +31,7 @@
   const nameInputElement = document.querySelector('.add-form-name');
   const commitInputElement = document.querySelector('.add-form-text');
 
-  const lastCommentDeletebutton = document.querySelector('.delete-last-comment');
+  const lastCommentDeleteButton = document.querySelector('.delete-last-comment');
   const likeButtonElements = document.querySelectorAll('.like-button');
   massageSendButton.disabled = true;
 
@@ -70,7 +70,6 @@
 
 
 
-
   const likeButtonListners = () => {
     const likeButtonElements = document.querySelectorAll('.like-button');
     for (const likeButtonElement of likeButtonElements) {
@@ -93,37 +92,90 @@
   }
 
 
+
+
+  const editButtonListners = () => {
+    const editButtonElements = document.querySelectorAll(".edit");
+    for (const editButtonElement of editButtonElements) {
+      editButtonElement.addEventListener("click", (event) => {
+        event.stopPropagation();
+        comments[editButtonElement.dataset.index].isEdit = false;
+        renderComments();
+      })
+    }
+  }
+
+
+
+  const doneButtonListners = () => {
+    const doneButtonElements = document.querySelectorAll(".done");
+    for (const doneButtonElement of doneButtonElements) {
+      doneButtonElement.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const dune = doneButtonElement.dataset.index;
+        const addFormTextEdit = document.querySelectorAll(".addformedit");
+        comments[done].massage = addFormTextEdit[done].value;
+        comments[done].isEdit = true;
+        renderComments();
+      })
+
+    }
+  }
+
+
+  const quoteElementsListners = () => {
+    const quoteElements = document.querySelectorAll(".comment-text");
+    for (const quoteElement of quoteElements) {
+      quoteElement.addEventListener("click", () => {
+        const quote = quoteElement.dataset.index;
+        commitInputElement.value = ">" + comments[quote].massage + "\n" + comments[quote].name + "\n";
+        renderComments();
+      })
+    }
+  }
+
+
+
   const renderComments = () => {
-    const commentshtml = comments.map((comment, index) => {
-      let activelikeclass;
+    const commentsHtml = comments.map((comment, index) => {
+      let activeLikeClass;
       if (comments[index].isLike === true) {
-        activelikeclass = "active-like"
+        activeLikeClass = "active-like"
       } else {
-        activelikeclass = ""
+        activeLikeClass = ""
       }
 
+      let massageHideClass;
+      let doneHideClass;
+
+
       return `
-      <li class="comment">
+        <li class="comment" data-index="${index}">
           <div class="comment-header">
             <div>${comment.name}</div>
             <div>${comment.date}</div>
           </div>
           <div class="comment-body">
-            <div class="comment-text">
+              <p class ="done ${doneHideClass}" data-index="${index}"></p>
+            <div class="comment-text ${massageHideClass}" data-index="${index}">
               ${comment.massage}
+              <p class ="edit" data-index="${index}"></p>
             </div>
           </div>
           <div class="comment-footer">
             <div class="likes">
               <span class="likes-counter">${comment.Likecounter}</span>
-              <button class="like-button ${activelikeclass}" data-index="${index}" data-like="${comment.isLike}"></button>
+              <button class="like-button ${activeLikeClass}" data-index="${index}" data-like="${comment.isLike}"></button>
               </div>
           </div>
         </li>`
     }).join("")
-    listElement.innerHTML = commentshtml;
+    listElement.innerHTML = commentsHtml;
 
     likeButtonListners();
+    editButtonListners();
+    doneButtonListners();
+    quoteElementsListners();
 
   }
   renderComments();
@@ -179,8 +231,6 @@
 
 
 
-
-
     nameInputElement.value = "";
     commitInputElement.value = "";
     nameInputElement.classList.remove("errorinput");
@@ -201,7 +251,7 @@
     massageSendButton.disabled = false;
   })
 
-  lastCommentDeletebutton.addEventListener("click", () => {
+  lastCommentDeleteButton.addEventListener("click", () => {
     if (comments.length > 0) {
       comments.pop();
       renderComments();
