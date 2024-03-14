@@ -150,5 +150,25 @@ body {
   cursor: pointer;
 }
 
+.errorinput {
+    background-color: rgb(191, 223, 154);
+}
+
+.edit {
+width: 35px;
+cursor :pointer;
+}
+
+.done {
+width: 40px;
+cursor :pointer;
+}
+
+.addformedit {
+width: 400px;
+}
+
+
+
 
 
