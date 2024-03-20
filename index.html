@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Проект Jack's Комменты 3</title>
+  <title>Проект Jack's Комменты API-1</title>
   <meta charset="utf-8" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -26,6 +26,7 @@
 </body>
 
 <script>
+  //Обработчики событий
   const massageSendButton = document.querySelector('.add-form-button');
   const listElement = document.querySelector('.comments');
   const nameInputElement = document.querySelector('.add-form-name');
@@ -37,6 +38,39 @@
 
 
 
+
+ //Функция получения и преобразования данных с сервера
+ function getComments() {
+    const fetchPromise = fetch(
+      'https://wedev-api.sky.pro/api/v1/eugeniy-chashkin/comments',
+      {
+        method: "GET",
+      });
+    fetchPromise.then((response) => {
+      const jsonPromise = response.json();
+      jsonPromise.then((responseData) => {
+        const appComments = responseData.comments.map((comment) => {
+          return {
+            name: comment.author.name,
+            date: new Date(comment.date).toLocaleDateString('ru-RU', { year: '2-digit', month: '2-digit', day: '2-digit' }) + ' ' + new Date(comment.date).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+            massage: comment.text,
+            likesCounter: comment.likes,
+            isLiked: false,
+            //id: comment.id,
+          }
+        });
+        comments = appComments;
+        renderComments();
+      });
+    });
+  };
+  getComments();
+
+
+
+
+
+  //Условное ветвление отрабатывает невозможность ввода первой буквы в виде пробела
   nameInputElement.oninput = () => {
     if (nameInputElement.value.charAt(0) === ' ') {
       nameInputElement.value = '';
@@ -48,28 +82,11 @@
       commitInputElement.value = '';
     }
   }
-
-  const comments = [
-    {
-      name: "Глеб Фокин",
-      date: "12.02.22 12:18",
-      massage: "Это будет первый комментарий на этой странице",
-      isLike: false,
-      Likecounter: 3,
-      isEdit: true
-    },
-    {
-      name: "Варвара Н.",
-      date: "13.02.22 19:22",
-      massage: " Мне нравится как оформлена эта страница! ❤",
-      isLike: true,
-      Likecounter: 75,
-      isEdit: true,
-    }
-  ]
+  //массив пользователей
+  let comments = [];
 
 
-
+  //функция лайков
   const likeButtonListners = () => {
     const likeButtonElements = document.querySelectorAll('.like-button');
     for (const likeButtonElement of likeButtonElements) {
@@ -77,12 +94,12 @@
         event.stopPropagation();
         const index = likeButtonElement.dataset.index;
         if (comments[index].isLike === false) {
-          comments[index].Likecounter = comments[index].Likecounter + 1;
+          comments[index].likesCounter = comments[index].likesCounter + 1;
           comments[index].isLike = true;
 
         } else {
           comments[index].isLike = false;
-          comments[index].Likecounter = comments[index].Likecounter - 1;
+          comments[index].likesCounter = comments[index].likesCounter - 1;
 
         }
         renderComments();
@@ -91,10 +108,9 @@
     }
   }
 
+//Функции ответа на комментарий
 
-
-
-  const editButtonListners = () => {
+const editButtonListners = () => {
     const editButtonElements = document.querySelectorAll(".edit");
     for (const editButtonElement of editButtonElements) {
       editButtonElement.addEventListener("click", (event) => {
@@ -104,6 +120,7 @@
       })
     }
   }
+  
 
 
 
@@ -135,7 +152,7 @@
   }
 
 
-
+  //HTML разметка комментария
   const renderComments = () => {
     const commentsHtml = comments.map((comment, index) => {
       let activeLikeClass;
@@ -164,7 +181,7 @@
           </div>
           <div class="comment-footer">
             <div class="likes">
-              <span class="likes-counter">${comment.Likecounter}</span>
+              <span class="likes-counter">${comment.likesCounter}</span>
               <button class="like-button ${activeLikeClass}" data-index="${index}" data-like="${comment.isLike}"></button>
               </div>
           </div>
@@ -172,65 +189,89 @@
     }).join("")
     listElement.innerHTML = commentsHtml;
 
-    likeButtonListners();
-    editButtonListners();
-    doneButtonListners();
-    quoteElementsListners();
+   likeButtonListners();
+   editButtonListners();
+   doneButtonListners();
+   quoteElementsListners();
 
   }
   renderComments();
 
 
+ //функция формата реального времени
+
+ function addComment() {
+
+const dateInput = new Date();
+let date = dateInput.getDate();
+let month = dateInput.getMonth() + 1;
+let year = dateInput.getFullYear();
+let hours = dateInput.getHours();
+let minutes = dateInput.getMinutes();
+if (date < 10) {
+  date = '0' + date;
+}
+if (month < 10) {
+  month = '0' + month;
+}
+if (hours < 10) {
+  hours = '0' + hours;
+}
+if (minutes < 10) {
+  minutes = '0' + minutes;
+}
+const ultimateDate = date + "." + month + "." + year + " " + hours + ":" + minutes;
 
 
-  function addComment() {
+//Обработчик клика и проверка ввода
+if (nameInputElement.value === "" && commitInputElement.value === "") {
+  nameInputElement.classList.add("errorinput");
+  commitInputElement.classList.add("errorinput");
+  return
+} else if (nameInputElement.value === "") {
+  nameInputElement.classList.add("errorinput");
+  return
+} else if (commitInputElement.value === "") {
+  commitInputElement.classList.add("errorinput");
+  return
+}
 
-    const dateInput = new Date();
-    let date = dateInput.getDate();
-    let month = dateInput.getMonth() + 1;
-    let year = dateInput.getFullYear();
-    let hours = dateInput.getHours();
-    let minutes = dateInput.getMinutes();
-    if (date < 10) {
-      date = '0' + date;
-    }
-    if (month < 10) {
-      month = '0' + month;
-    }
-    if (hours < 10) {
-      hours = '0' + hours;
-    }
-    if (minutes < 10) {
-      minutes = '0' + minutes;
-    }
-    const ultimateDate = date + "." + month + "." + year + " " + hours + ":" + minutes;
-
-
-
-    if (nameInputElement.value === "" && commitInputElement.value === "") {
-      nameInputElement.classList.add("errorinput");
-      commitInputElement.classList.add("errorinput");
-      return
-    } else if (nameInputElement.value === "") {
-      nameInputElement.classList.add("errorinput");
-      return
-    } else if (commitInputElement.value === "") {
-      commitInputElement.classList.add("errorinput");
-      return
-    }
+//Вввод нового комментария
+comments.push({
+  name: nameInputElement.value.replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
+  date: ultimateDate,
+  massage: commitInputElement.value.replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
+  isLike: false,
+  likesCounter: 0,
+  likes: 0,
+  isEdit: true,
+});
 
 
-    comments.push({
+//Функция добавлений данных на сервер
+const fetchPromise = fetch(
+  'https://wedev-api.sky.pro/api/v1/eugeniy-chashkin/comments',
+  {
+    method: "POST",
+    body: JSON.stringify({
+
+      text: commitInputElement.value.replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
       name: nameInputElement.value.replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
-      date: ultimateDate,
-      massage: commitInputElement.value.replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
-      isLike: false,
-      Likecounter: 0,
-      isEdit: true
-    })
+    }),
+  });
+
+fetchPromise.then((response) => {
+  console.log(response);
+  const jsonPromise = response.json();
+
+  getComments();
+  renderComments();
+});
+
+ 
 
 
-
+    //Очистка форм input
     nameInputElement.value = "";
     commitInputElement.value = "";
     nameInputElement.classList.remove("errorinput");
@@ -259,6 +300,10 @@
   })
 
 
+
+
+ 
+ 
 
 </script>
 
