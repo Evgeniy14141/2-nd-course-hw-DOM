@@ -2,22 +2,24 @@
 <html>
 
 <head>
-  <title>Проект Jack's Комменты API-1</title>
+  <title>Проект Jack's Комменты API-2</title>
   <meta charset="utf-8" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
   <div class="container">
-    <ul class="comments">
-
+    <span id="loader">Загрузка комментариев....</span>
+    <ul id="list" class="comments">
+      <!-- Список рендерится из JS -->
     </ul>
     <div class="add-form">
-      <input type="text" class="add-form-name" placeholder="Введите ваше имя" />
-      <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"></textarea>
+      <input id="name-input" type="text" class="add-form-name" placeholder="Введите ваше имя" />
+      <textarea id="comment-input" type="textarea" class="add-form-text" placeholder="Введите ваш коментарий"
+        rows="4"></textarea>
       <div class="add-form-row">
-        <button class="add-form-button">Написать</button>
-        <button class="delete-last-comment">Удалить комментарий</button>
+        <button id="add-button" class="add-form-button">Написать</button>
+        <button id="delete-button" class="delete-last-comment">Удалить комментарий</button>
       </div>
 
 
@@ -31,7 +33,7 @@
   const listElement = document.querySelector('.comments');
   const nameInputElement = document.querySelector('.add-form-name');
   const commitInputElement = document.querySelector('.add-form-text');
-
+  const loadElement = document.getElementById('loader');
   const lastCommentDeleteButton = document.querySelector('.delete-last-comment');
   const likeButtonElements = document.querySelectorAll('.like-button');
   massageSendButton.disabled = true;
@@ -39,16 +41,19 @@
 
 
 
- //Функция получения и преобразования данных с сервера
- function getComments() {
-    const fetchPromise = fetch(
+  //Функция получения и преобразования данных с сервера
+
+  function getComments() {
+    return fetch(
       'https://wedev-api.sky.pro/api/v1/eugeniy-chashkin/comments',
       {
-        method: "GET",
-      });
-    fetchPromise.then((response) => {
-      const jsonPromise = response.json();
-      jsonPromise.then((responseData) => {
+        method: "GET"
+      }
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((responseData) => {
         const appComments = responseData.comments.map((comment) => {
           return {
             name: comment.author.name,
@@ -56,19 +61,15 @@
             massage: comment.text,
             likesCounter: comment.likes,
             isLiked: false,
-            //id: comment.id,
-          }
+          };
         });
         comments = appComments;
         renderComments();
+        loadElement.classList.add('hide');
       });
-    });
   };
+
   getComments();
-
-
-
-
 
   //Условное ветвление отрабатывает невозможность ввода первой буквы в виде пробела
   nameInputElement.oninput = () => {
@@ -86,19 +87,20 @@
   let comments = [];
 
 
-  //функция лайков
+
   const likeButtonListners = () => {
     const likeButtonElements = document.querySelectorAll('.like-button');
     for (const likeButtonElement of likeButtonElements) {
       likeButtonElement.addEventListener('click', event => {
         event.stopPropagation();
         const index = likeButtonElement.dataset.index;
-        if (comments[index].isLike === false) {
+
+        if (comments[index].isLiked === false) {
           comments[index].likesCounter = comments[index].likesCounter + 1;
-          comments[index].isLike = true;
+          comments[index].isLiked = true;
 
         } else {
-          comments[index].isLike = false;
+          comments[index].isLiked = false;
           comments[index].likesCounter = comments[index].likesCounter - 1;
 
         }
@@ -108,9 +110,9 @@
     }
   }
 
-//Функции ответа на комментарий
+  //Функции ответа на комментарий
 
-const editButtonListners = () => {
+  const editButtonListners = () => {
     const editButtonElements = document.querySelectorAll(".edit");
     for (const editButtonElement of editButtonElements) {
       editButtonElement.addEventListener("click", (event) => {
@@ -120,7 +122,7 @@ const editButtonListners = () => {
       })
     }
   }
-  
+
 
 
 
@@ -156,7 +158,7 @@ const editButtonListners = () => {
   const renderComments = () => {
     const commentsHtml = comments.map((comment, index) => {
       let activeLikeClass;
-      if (comments[index].isLike === true) {
+      if (comments[index].isLiked === true) {
         activeLikeClass = "active-like"
       } else {
         activeLikeClass = ""
@@ -182,95 +184,64 @@ const editButtonListners = () => {
           <div class="comment-footer">
             <div class="likes">
               <span class="likes-counter">${comment.likesCounter}</span>
-              <button class="like-button ${activeLikeClass}" data-index="${index}" data-like="${comment.isLike}"></button>
+              <button class="like-button ${activeLikeClass}" data-index="${index}" data-like="${comment.isLiked}"></button>
               </div>
           </div>
         </li>`
     }).join("")
     listElement.innerHTML = commentsHtml;
 
-   likeButtonListners();
-   editButtonListners();
-   doneButtonListners();
-   quoteElementsListners();
+    likeButtonListners();
+    editButtonListners();
+    doneButtonListners();
+    quoteElementsListners();
 
   }
   renderComments();
 
 
- //функция формата реального времени
-
- function addComment() {
-
-const dateInput = new Date();
-let date = dateInput.getDate();
-let month = dateInput.getMonth() + 1;
-let year = dateInput.getFullYear();
-let hours = dateInput.getHours();
-let minutes = dateInput.getMinutes();
-if (date < 10) {
-  date = '0' + date;
-}
-if (month < 10) {
-  month = '0' + month;
-}
-if (hours < 10) {
-  hours = '0' + hours;
-}
-if (minutes < 10) {
-  minutes = '0' + minutes;
-}
-const ultimateDate = date + "." + month + "." + year + " " + hours + ":" + minutes;
 
 
-//Обработчик клика и проверка ввода
-if (nameInputElement.value === "" && commitInputElement.value === "") {
-  nameInputElement.classList.add("errorinput");
-  commitInputElement.classList.add("errorinput");
-  return
-} else if (nameInputElement.value === "") {
-  nameInputElement.classList.add("errorinput");
-  return
-} else if (commitInputElement.value === "") {
-  commitInputElement.classList.add("errorinput");
-  return
-}
-
-//Вввод нового комментария
-comments.push({
-  name: nameInputElement.value.replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
-  date: ultimateDate,
-  massage: commitInputElement.value.replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
-  isLike: false,
-  likesCounter: 0,
-  likes: 0,
-  isEdit: true,
-});
+  function addComment() {
 
 
-//Функция добавлений данных на сервер
-const fetchPromise = fetch(
-  'https://wedev-api.sky.pro/api/v1/eugeniy-chashkin/comments',
-  {
-    method: "POST",
-    body: JSON.stringify({
+    //Обработчик клика и проверка ввода
+    if (nameInputElement.value === "" && commitInputElement.value === "") {
+      nameInputElement.classList.add("errorinput");
+      commitInputElement.classList.add("errorinput");
+      return
+    } else if (nameInputElement.value === "") {
+      nameInputElement.classList.add("errorinput");
+      return
+    } else if (commitInputElement.value === "") {
+      commitInputElement.classList.add("errorinput");
+      return
+    }
 
-      text: commitInputElement.value.replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
-      name: nameInputElement.value.replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
-    }),
-  });
+    //Вввод нового комментария
+    massageSendButton.disabled = true;
+    massageSendButton.textContent = 'Ждите....';
 
-fetchPromise.then((response) => {
-  console.log(response);
-  const jsonPromise = response.json();
-
-  getComments();
-  renderComments();
-});
-
- 
+    //Функция добавлений данных на сервер
 
 
+
+
+    fetch(
+      'https://wedev-api.sky.pro/api/v1/eugeniy-chashkin/comments',
+      {
+        method: "POST",
+        body: JSON.stringify({
+          name: nameInputElement.value.replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
+          text: commitInputElement.value.replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
+        })
+      }
+    ).then(() => {
+      return getComments();
+    }).then(() => {
+      massageSendButton.disabled = false;
+      massageSendButton.textContent = 'Написать';
+    })
     //Очистка форм input
     nameInputElement.value = "";
     commitInputElement.value = "";
@@ -279,8 +250,7 @@ fetchPromise.then((response) => {
 
     renderComments();
 
-
-  }
+  };
 
   massageSendButton.addEventListener("click", addComment);
 
@@ -297,13 +267,10 @@ fetchPromise.then((response) => {
       comments.pop();
       renderComments();
     }
-  })
+  });
 
 
 
-
- 
- 
 
 </script>
 
