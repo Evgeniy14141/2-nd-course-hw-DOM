@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Проект Jack's Комменты API-2</title>
+  <title>Проект Jack's Комменты API-3</title>
   <meta charset="utf-8" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -44,32 +44,53 @@
   //Функция получения и преобразования данных с сервера
 
   function getComments() {
-    return fetch(
-      'https://wedev-api.sky.pro/api/v1/eugeniy-chashkin/comments',
-      {
-        method: "GET"
-      }
-    )
+    const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/eugeniy-chashkin/comments", {
+      method: "GET",
+    });
+
+    fetchPromise
       .then((response) => {
+        if (response.status === 500) {
+          throw new Error("Сервер сломался");
+        }
         return response.json();
       })
       .then((responseData) => {
-        const appComments = responseData.comments.map((comment) => {
+        comments = responseData.comments.map((comment) => {
           return {
-            name: comment.author.name,
+            name: comment.author.name
+              .replace(/&lt;/g, "<")
+              .replace(/&gt;/g, ">")
+              .replace(/&amp;/g, "&")
+              .replace(/&quot;/g, '"')
+              .replace(/&nbsp;/g, " "),
             date: new Date(comment.date).toLocaleDateString('ru-RU', { year: '2-digit', month: '2-digit', day: '2-digit' }) + ' ' + new Date(comment.date).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-            massage: comment.text,
+            massage: comment.text
+              .replace(/&lt;/g, "<")
+              .replace(/&gt;/g, ">")
+              .replace(/&amp;/g, "&")
+              .replace(/&quot;/g, '"')
+              .replace(/&nbsp;/g, " "),
             likesCounter: comment.likes,
             isLiked: false,
           };
         });
-        comments = appComments;
+      })
+      .then(() => {
         renderComments();
         loadElement.classList.add('hide');
+      })
+      .catch((error) => {
+        if (error.message === "Сервер сломался") {
+          alert("Сервер сломался, попробуй позже");
+          return;
+        }
       });
-  };
-
+  }
   getComments();
+
+
+
 
   //Условное ветвление отрабатывает невозможность ввода первой буквы в виде пробела
   nameInputElement.oninput = () => {
@@ -222,35 +243,75 @@
     massageSendButton.disabled = true;
     massageSendButton.textContent = 'Ждите....';
 
-    //Функция добавлений данных на сервер
+    const nameValue = nameInputElement.value;
+    const textValue = commitInputElement.value;
 
-
-
-
-    fetch(
-      'https://wedev-api.sky.pro/api/v1/eugeniy-chashkin/comments',
-      {
-        method: "POST",
-        body: JSON.stringify({
-          name: nameInputElement.value.replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
-          text: commitInputElement.value.replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
-        })
-      }
-    ).then(() => {
-      return getComments();
-    }).then(() => {
-      massageSendButton.disabled = false;
-      massageSendButton.textContent = 'Написать';
-    })
-    //Очистка форм input
-    nameInputElement.value = "";
-    commitInputElement.value = "";
     nameInputElement.classList.remove("errorinput");
     commitInputElement.classList.remove("errorinput");
 
-    renderComments();
+    //Функция добавлений данных на сервер
+    fetch("https://wedev-api.sky.pro/api/v1/eugeniy-chashkin/comments", {
+      method: "POST",
+      body: JSON.stringify({
+        name: nameValue
+          .replaceAll("<", "&lt")
+          .replaceAll(">", "&gt")
+          .replaceAll("&", "&amp;")
+          .replaceAll('"', "&quot;")
+          .replaceAll(" ", "&nbsp;"),
+        text: textValue
+          .replaceAll("<", "&lt")
+          .replaceAll(">", "&gt")
+          .replaceAll("&", "&amp;")
+          .replaceAll('"', "&quot;")
+          .replaceAll(" ", "&nbsp;"),
 
+        // для вызова 500 ошибки код ниже
+        forceError: true
+      }),
+    })
+      .then((response) => {
+        if (response.status === 400 && (nameValue.length < 3 || textValue.length < 3)) { // обрабатываем ошибку 400
+          throw new Error("Некорректный запрос");
+        }
+        if (response.status === 500) {
+          throw new Error("Сервер сломался");
+        }
+        else {
+          return response.json();
+        }
+      })
+      .then((responseData) => {
+        getComments();
+      })
+      .then((data) => {
+        massageSendButton.disabled = false;
+        massageSendButton.textContent = 'Написать';
+      })
+      .catch((error) => {
+        if (error.message === "Сервер сломался") {
+          alert("Сервер сломался, попробуй позже");
+          nameInputElement.value = nameValue;
+          commitInputElement.value = textValue;
+          return;
+        } if (error.message === "Некорректный запрос") {
+          alert("Имя и комментарий должны быть не короче 3 символов");
+          nameInputElement.value = nameValue;
+          commitInputElement.value = textValue;
+        }
+        if (error instanceof TypeError) {
+          alert("Кажется, у вас сломался интернет, попробуйте позже");
+          return;
+        }
+        console.log(error);
+      })
+      .finally(() => {
+        massageSendButton.disabled = false;
+        massageSendButton.textContent = 'Написать';
+      });
   };
+
+
 
   massageSendButton.addEventListener("click", addComment);
 
@@ -268,7 +329,6 @@
       renderComments();
     }
   });
-
 
 
 
