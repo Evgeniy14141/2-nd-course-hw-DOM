@@ -34,7 +34,6 @@ export function postTodo(nameValue, textValue) {
                 .replaceAll('"', "&quot;")
                 .replaceAll(" ", "&nbsp;"),
 
-
             forceError: false
         }),
     })
