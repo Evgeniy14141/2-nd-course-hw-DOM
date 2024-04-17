@@ -23,9 +23,7 @@ export function addCommentsList() {
     if (textInputElement.value.charAt(0) === ' ') {
       textInputElement.value = '';
     }
-  }
-
-
+  }  
 
   buttonElement.addEventListener('click', () => {
     textInputElement.classList.remove("error");

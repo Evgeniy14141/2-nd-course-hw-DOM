@@ -1,7 +1,7 @@
 import { comments, user } from "./main.js";
 
 export const renderComments = () => {
-
+  
 
   const listElement = document.getElementById("list");
   const commentsHtml = comments.map((item) => {

@@ -41,20 +41,49 @@ export const renderLoginForm = () => {
         }).catch((error) => {
             if (error.message === 'Failed to fetch') {
                 alert("Кажется что-то пошло не так, попробуйте позже");
-            };
-            if (error.message === "Сервер упал") {
+            } else if (error.message === "Сервер упал") {
                 alert('Сервер сломался, попробуйте позже');
-            };
-            if (error.message === "Короткие вводимые данные") {
+            } else if (error.message === "Короткие вводимые данные") {
                 alert('Неверный логин или пароль.');
-            };
-            console.warn(error);
+            } else
+                console.warn(error);
         });
     });
     const regButton = document.querySelector(".reg-button");
     regButton.addEventListener('click', () => {
         renderRegForm();
     });
+
+    loginInputElement.oninput = () => {
+        if (loginInputElement.value.charAt(0) === ' ') {
+            loginInputElement.value = '';
+        }
+    }
+    passwordInputElement.oninput = () => {
+        if (passwordInputElement.value.charAt(0) === ' ') {
+            passwordInputElement.value = '';
+        }
+    }
+
+    authButtonElement.addEventListener('click', () => {
+        loginInputElement.classList.remove("error");
+        if (!loginInputElement.value.trim()) {
+            loginInputElement.classList.add("error");
+            return;
+        }
+    }
+    )
+
+    authButtonElement.addEventListener('click', () => {
+        passwordInputElement.classList.remove("error");
+        if (!passwordInputElement.value.trim()) {
+            passwordInputElement.classList.add("error");
+            return;
+        }
+
+    }
+    )
+
 };
 
 export const renderRegForm = () => {
@@ -107,18 +136,49 @@ type="password"
         }).catch((error) => {
             if (error.message === 'Failed to fetch') {
                 alert("Кажется что-то пошло не так, попробуйте позже");
-            };
-            if (error.message === "Сервер упал") {
+            } else if (error.message === "Сервер упал") {
                 alert('Сервер сломался, попробуйте позже');
-            };
-            if (error.message === "Короткие вводимые данные") {
+            } else if (error.message === "Короткие вводимые данные") {
                 alert('Неверный логин или пароль.');
-            };
-            console.warn(error);
+            } else
+                console.warn(error);
         });
     });
     const authButton = document.querySelector(".auth-button");
     authButton.addEventListener('click', () => {
         renderLoginForm();
     });
-};
+
+
+
+    regButtonElement.addEventListener('click', () => {
+        nameInputElement.classList.remove("error");
+        if (!nameInputElement.value.trim()) {
+            nameInputElement.classList.add("error");
+            return;
+        }
+    }
+    )
+
+    regButtonElement.addEventListener('click', () => {
+        loginInputElement.classList.remove("error");
+        if (!loginInputElement.value.trim()) {
+            loginInputElement.classList.add("error");
+            return;
+        }
+    }
+    )
+    regButtonElement.addEventListener('click', () => {
+        passwordInputElement.classList.remove("error");
+        if (!passwordInputElement.value.trim()) {
+            passwordInputElement.classList.add("error");
+            return;
+        }
+    }
+    )
+    
+}
+
+
+
+

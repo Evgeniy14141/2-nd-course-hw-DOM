@@ -46,13 +46,16 @@ export function postTodo({ text, name }) {
     }).then((response) => {
       if (response.status === 500) {
         throw new Error("Сервер упал");
-      };
-      if (response.status === 400) {
-        throw new Error("Короткие вводимые данные");
-      };
-      return response.json();
+      } else if (response.status === 400) {
+        throw new Error('Неправильный запрос');
+      } else if (response.status === 401) {
+        throw new Error('Нет авторизации');
+      } else {
+        return response.json();
+      }
     });
 };
+
 export function authUser({ login, password }) {
   return fetch(userHost,
     {
@@ -65,11 +68,11 @@ export function authUser({ login, password }) {
     }).then((response) => {
       if (response.status === 500) {
         throw new Error("Сервер упал");
-      };
-      if (response.status === 400) {
-        throw new Error("Короткие вводимые данные");
-      };
-      return response.json();
+      } else if (response.status === 400) {
+        throw new Error('Нет авторизации');
+      } else {
+        return response.json();
+      }
     });
 };
 
@@ -86,10 +89,10 @@ export function regUser({ name, login, password }) {
     }).then((response) => {
       if (response.status === 500) {
         throw new Error("Сервер упал");
-      };
-      if (response.status === 400) {
-        throw new Error("Короткие вводимые данные");
-      };
-      return response.json();
+      } else if (response.status === 400) {
+        throw new Error('Ошибка авторизации');
+      } else {
+        return response.json();
+      }
     });
 };
