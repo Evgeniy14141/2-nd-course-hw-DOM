@@ -149,6 +149,23 @@ type="password"
         renderLoginForm();
     });
 
+    nameInputElement.oninput = () => {
+        if (nameInputElement.value.charAt(0) === ' ') {
+            nameInputElement.value = '';
+        }
+    }
+
+    loginInputElement.oninput = () => {
+        if (loginInputElement.value.charAt(0) === ' ') {
+            loginInputElement.value = '';
+        }
+    }
+    passwordInputElement.oninput = () => {
+        if (passwordInputElement.value.charAt(0) === ' ') {
+            passwordInputElement.value = '';
+        }
+    }
+
 
 
     regButtonElement.addEventListener('click', () => {

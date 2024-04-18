@@ -49,6 +49,7 @@ export function postTodo({ text, name }) {
       } else if (response.status === 400) {
         throw new Error('Неправильный запрос');
       } else if (response.status === 401) {
+        alert('Нет авторизации');
         throw new Error('Нет авторизации');
       } else {
         return response.json();
@@ -69,6 +70,7 @@ export function authUser({ login, password }) {
       if (response.status === 500) {
         throw new Error("Сервер упал");
       } else if (response.status === 400) {
+        alert('Вы ошиблись при авторизации, пожалуйста заполните все поля ввода со значениями не менее трёх символов, благодарим за сотрудничество!!!');
         throw new Error('Нет авторизации');
       } else {
         return response.json();
@@ -90,6 +92,7 @@ export function regUser({ name, login, password }) {
       if (response.status === 500) {
         throw new Error("Сервер упал");
       } else if (response.status === 400) {
+        alert('Вы ошиблись в регистрации, пожалуйста заполните все поля ввода со значениями не менее трёх символов, за ранее спасибо!!!');
         throw new Error('Ошибка авторизации');
       } else {
         return response.json();
