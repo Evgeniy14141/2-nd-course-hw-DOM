@@ -9,7 +9,7 @@ body {
   flex-direction: column;
   align-items: center;
   padding-top: 80px;
-  padding-bottom: 200px;
+  padding-bottom: 30px;
   background: #202020;
   min-height: 100vh;
 }
@@ -25,11 +25,9 @@ body {
 .add-form {
   width: 596px;
   box-sizing: border-box;
-  background: radial-gradient(
-    75.42% 75.42% at 50% 42.37%,
-    rgba(53, 53, 53, 0) 22.92%,
-    #7334ea 100%
-  );
+  background: radial-gradient(75.42% 75.42% at 50% 42.37%,
+      rgba(53, 53, 53, 0) 22.92%,
+      #7334ea 100%);
   filter: drop-shadow(0px 20px 67px rgba(0, 0, 0, 0.08));
   border-radius: 20px;
 }
@@ -151,26 +149,116 @@ body {
 }
 
 .errorinput {
-    background-color: rgb(191, 223, 154);
+  background-color: rgb(191, 223, 154);
 }
 
 .edit {
-width: 35px;
-cursor :pointer;
+  width: 35px;
+  cursor: pointer;
 }
 
 .done {
-width: 40px;
-cursor :pointer;
+  width: 40px;
+  cursor: pointer;
 }
 
 .addformedit {
-width: 400px;
+  width: 400px;
 }
 
 
 
 .hide {
-    display: none;
+  display: none;
 }
 
+.link {
+  text-decoration: underline;
+  color: aliceblue;
+  font-size: 20px;
+  text-align: center;
+}
+
+.link-authorization {
+  text-decoration: underline;
+  color: aliceblue;
+  background-color: transparent;
+  font-size: 16px;
+  border: none;
+}
+
+.input {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.add-form-input {
+  font-size: 16px;
+  font-family: Helvetica;
+  border-radius: 8px;
+  border: none;
+  padding: 11px 22px;
+  margin-top: 12px;
+}
+
+.add-form-login-button {
+  font-size: 20px;
+  padding: 10px 20px;
+  background-color: #bcec30;
+  border: none;
+  border-radius: 18px;
+  cursor: pointer;
+  margin-top: 14px;
+  margin-bottom: 14px;
+}
+
+.heading {
+  font-size: 20px;
+}
+
+.reg-button {
+  text-decoration: underline;
+  color: aliceblue;
+  font-size: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.input-form {
+  width: 300px;
+  padding: 11px 22px;
+  border-radius: 8px;
+  margin-top: 12px;
+  font-family: Helvetica;
+  font-size: medium;
+}
+
+.text-area-form {
+  margin-top: 12px;
+  padding: 22px;
+  resize: none;
+  border-radius: 8px;
+  font-family: Helvetica;
+  font-size: medium;
+}
+
+
+.auth-button {
+  margin-top: 14px;
+  text-decoration: underline;
+  color: aliceblue;
+  font-size: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.auth-link {
+  cursor: pointer;
+  background: rgba(53, 53, 53, 0) 22.92%,
+}
+
+.auth-link:hover {
+  -webkit-text-decoration: underline #FFFFFF;
+  text-decoration: underline #FFFFFF;
+}
