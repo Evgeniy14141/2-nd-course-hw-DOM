@@ -1,10 +1,21 @@
 import { comments, user } from "./main.js";
+//import { formatDateTime } from "./lib/formatDate.js";
+import { format } from "date-fns";
+//import { formatDateToSwe } from "./lib/formatDate.js";
 
+
+const now = new Date();
+format(now, "yyyy-MM-dd hh.mm.ss");
 export const renderComments = () => {
-  
+
 
   const listElement = document.getElementById("list");
+  //const country = "swe";
   const commentsHtml = comments.map((item) => {
+    const creatDate = format(
+      new Date(item.date),
+      "yyyy-MM-dd hh.mm.ss",
+    );
 
     let activeLikeClass;
     if (item.isLiked === true) {
@@ -13,10 +24,12 @@ export const renderComments = () => {
       activeLikeClass = ""
     }
 
+
+
     return `<li class="comment">
                 <div class="comment-header">
                   <div class="user-name">${item.name}</div>
-                  <div>${item.date}</div>
+                  <div>${creatDate}</div>
                 </div>
                 <div data-text="${item.comment}" class="comment-body">
                   <div class="comment-text">

@@ -1,0 +1,21 @@
+{
+  "name": "2-nd-course-hw-dom",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "dev": "webpack --mode development --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "date-fns": "^3.6.0"
+  },
+  "devDependencies": {
+    "axios": "^1.6.8",
+    "webpack-cli": "^5.1.4"
+  }
+}

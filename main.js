@@ -30,7 +30,7 @@ export function getComments() {
     const appComments = responseData.comments.map((comment) => {
       return {
         name: comment.author.name,
-        date: new Date(comment.date).toLocaleDateString('ru-RU', { year: '2-digit', month: '2-digit', day: '2-digit' }) + ' ' + new Date(comment.date).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        date: comment.date,
         comment: comment.text,
         likes: comment.likes,
         isLiked: false,
